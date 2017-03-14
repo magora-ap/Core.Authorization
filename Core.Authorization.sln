@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Authorization.WebApi", "Core.WebApi.Authorization\Core.Authorization.WebApi.csproj", "{82C6A031-129C-4004-ADC4-8D9726B152BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Dal.Common", "Core.Dal.Common\Core.Dal.Common.csproj", "{71D9F89C-C127-4ADA-AB6E-D2A192F79F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Common", "Core.Common\Core.Common.csproj", "{6CEBC971-A646-4764-A2D1-DE0104A14B73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82C6A031-129C-4004-ADC4-8D9726B152BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82C6A031-129C-4004-ADC4-8D9726B152BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82C6A031-129C-4004-ADC4-8D9726B152BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82C6A031-129C-4004-ADC4-8D9726B152BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D9F89C-C127-4ADA-AB6E-D2A192F79F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D9F89C-C127-4ADA-AB6E-D2A192F79F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D9F89C-C127-4ADA-AB6E-D2A192F79F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D9F89C-C127-4ADA-AB6E-D2A192F79F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CEBC971-A646-4764-A2D1-DE0104A14B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CEBC971-A646-4764-A2D1-DE0104A14B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CEBC971-A646-4764-A2D1-DE0104A14B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CEBC971-A646-4764-A2D1-DE0104A14B73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
