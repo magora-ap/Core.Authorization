@@ -22,6 +22,8 @@ namespace Core.Authorization.WebApi
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            //get settings and start migrations
             var config = Configuration.GetSection("Settings");
             new MigrationsRunnerDal(config.Get<ConfigurationSettings>()).MigrateToLatest();
         }

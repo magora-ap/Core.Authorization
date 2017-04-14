@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using FluentMigrator;
 using FluentMigrator.Runner;
@@ -10,14 +11,23 @@ namespace Core.Dal.Common
 {
     public abstract class MigrationsRunnerAbstract
     {
-        public abstract string Namespace { get; }
-        public abstract string ConnectionString { get; }
-        public abstract Assembly Assembly { get; }
+        private string Namespace => NamespaceType.Namespace;
+        private string ConnectionString { get; }
+        
+        private Type NamespaceType { get; set; }
+        private Assembly Assembly => NamespaceType.GetTypeInfo().Assembly;
+
+        protected MigrationsRunnerAbstract(Type namespaceType, string connectionString)
+        {
+            NamespaceType = namespaceType;
+            ConnectionString = connectionString;
+        }
+
         public void MigrateToLatest()
         {
             var announcer = new TextWriterAnnouncer(s => Debug.WriteLine(s));
 
-
+           
             var migrationContext = new RunnerContext(announcer)
             {
                 Namespace = Namespace
