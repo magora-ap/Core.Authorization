@@ -5,9 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Baseline\BaselineUp.sql">
+      <LastGenOutput>BaselineUp.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.5.0" />
     <PackageReference Include="FluentMigrator.Runner.Cli" Version="1.0.0-beta5" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-beta1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Serenity.FluentMigrator" Version="1.6.904" />
+    <PackageReference Include="Serenity.FluentMigrator.Runner" Version="1.6.904" />
   </ItemGroup>
 
   <ItemGroup>
