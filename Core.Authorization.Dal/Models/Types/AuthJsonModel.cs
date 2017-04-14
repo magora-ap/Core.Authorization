@@ -1,6 +1,6 @@
 ﻿using Core.Authorization.Common.Models.Helpers;
 
-namespace Core.Authorization.Common.Models.Types
+namespace Core.Authorization.Dal.Models.Types
 {
     public class AuthJsonModel
     {

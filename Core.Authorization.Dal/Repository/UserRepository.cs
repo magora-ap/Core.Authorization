@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Authorization.Common.Models.Repository;
-using Core.Authorization.Common.Models.Types;
 using Core.Dal.Common.Repository;
 using Core.Authorization.Dal.Abstract;
+using Core.Authorization.Dal.Models;
+using Core.Authorization.Dal.Models.Types;
 using Core.Dal.Common.Connection;
 using Core.Dal.Common.Models;
 using Newtonsoft.Json;

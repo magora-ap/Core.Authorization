@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.Authorization.Common.Models.Types;
+using Core.Authorization.Dal.Models.Types;
 
-namespace Core.Authorization.Common.Models.Repository
+namespace Core.Authorization.Dal.Models
 {
     public class UserModel
     {

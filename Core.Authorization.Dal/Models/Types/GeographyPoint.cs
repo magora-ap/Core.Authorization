@@ -1,4 +1,4 @@
-﻿namespace Core.Authorization.Common.Models.Types
+﻿namespace Core.Authorization.Dal.Models.Types
 {
     public class GeographyPoint
     {

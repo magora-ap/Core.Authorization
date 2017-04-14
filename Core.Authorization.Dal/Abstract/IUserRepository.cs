@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Authorization.Common.Models.Repository;
+using Core.Authorization.Dal.Models;
 using Core.Dal.Common.Abstract;
 
 namespace Core.Authorization.Dal.Abstract
