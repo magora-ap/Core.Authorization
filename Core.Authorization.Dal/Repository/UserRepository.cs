@@ -5,9 +5,9 @@ using Core.Authorization.Common.Models.Repository;
 using Core.Authorization.Common.Models.Types;
 using Core.Dal.Common.Repository;
 using Core.Authorization.Dal.Abstract;
+using Core.Dal.Common.Connection;
 using Core.Dal.Common.Models;
 using Newtonsoft.Json;
-using Npgsql;
 
 namespace Core.Authorization.Dal.Repository
 {
@@ -17,7 +17,7 @@ namespace Core.Authorization.Dal.Repository
     /// Initial author Sergey Sushenko
     public class UserRepository:BaseRepository<UserModel, Guid>, IUserRepository
     {
-        public UserRepository(NpgsqlConnection connection) : base(connection)
+        public UserRepository(PostgreConnection connection) : base(connection)
         {
         }
 

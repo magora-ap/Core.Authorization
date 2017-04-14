@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Core.Authorization.Common.Concrete.Helpers;
+using Core.Dal.Common.Connection;
 using Core.Dal.Common.Extension;
 using Core.Dal.Common.Models;
-using Npgsql;
 
 namespace Core.Dal.Common.Repository
 {
@@ -22,7 +19,7 @@ namespace Core.Dal.Common.Repository
         protected virtual string Namespace => "public";
         protected string FullTableName => $"\"{Namespace}\".{TableName}";
 
-        protected BaseRepository(NpgsqlConnection connection) : base(connection)
+        protected BaseRepository(PostgreConnection connection) : base(connection)
         {
         }
 

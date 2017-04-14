@@ -10,7 +10,7 @@ namespace Core.Dal.Common.DataTable
 
         public DataTableCore()
         {
-            Rows=new List<Dictionary<string, object>>();
+            Rows = new List<Dictionary<string, object>>();
         }
 
         public void Load(NpgsqlDataReader reader)
@@ -19,6 +19,7 @@ namespace Core.Dal.Common.DataTable
             {
                 Rows.Add(Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue));
             }
+            reader.Dispose();
         }
     }
 }

@@ -4,6 +4,7 @@ using Autofac.Features.AttributeFilters;
 using Core.Authorization.Common.Concrete.Helpers;
 using Core.Authorization.Dal.Abstract;
 using Core.Authorization.Dal.Repository;
+using Core.Dal.Common.Connection;
 using Microsoft.Extensions.Options;
 using Npgsql;
 
@@ -25,15 +26,8 @@ namespace Core.Authorization.Dal
             base.Load(builder);
 
             builder.Register(
-                    x =>
-                    {
-                        var connection = NpgsqlFactory.Instance.CreateConnection() as NpgsqlConnection;
-                        connection.ConnectionString = Settings.ConnectionString;
-                        return connection;
-                    }).As<NpgsqlConnection>()
-                .InstancePerLifetimeScope();
-                //.OnActivated(x => { x.Instance.Open(); })
-                //.OnRelease(x => { x.Close(); });
+                   x => new PostgreConnection(Settings.ConnectionString)).As<PostgreConnection>()
+               .InstancePerLifetimeScope();
 
             builder.RegisterType<UserRepository>().As<IUserRepository>().WithAttributeFiltering();
         }

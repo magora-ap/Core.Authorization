@@ -1,9 +1,9 @@
-﻿using Npgsql;
+﻿using Core.Dal.Common.Connection;
 
 namespace Core.Dal.Common.Abstract
 {
     public interface ITransactionRepository
     {
-        NpgsqlTransaction BeginTransaction();
+        PostgreTransaction BeginTransaction();
     }
 }
