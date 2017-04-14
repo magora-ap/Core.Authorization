@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Core.Authorization.Bll.Helpers;
+using Core.Authorization.Dal.Abstract;
+using Core.Authorization.Dal.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Authorization.WebApi.Controllers
@@ -6,11 +9,19 @@ namespace Core.Authorization.WebApi.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        public ValuesController(IUserRepository repository)
+        {
+            var t = repository;
+        }
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            using (var ioc=IoC.BeginLifetimeScope())
+            {
+                return new string[] { "value1", "value2" };
+            }
+           
         }
 
         // GET api/values/5

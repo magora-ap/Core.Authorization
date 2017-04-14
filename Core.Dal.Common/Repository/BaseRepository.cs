@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Core.Common.Concrete.Helpers;
+using Core.Authorization.Common.Concrete.Helpers;
 using Core.Dal.Common.Extension;
 using Core.Dal.Common.Models;
 using Npgsql;

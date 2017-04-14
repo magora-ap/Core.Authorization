@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Common.Concrete.Helpers
+namespace Core.Authorization.Common.Concrete.Helpers
 {
     public static class Utils
     {
