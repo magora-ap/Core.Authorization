@@ -4,8 +4,7 @@
     {
         public enum Group
         {
-            Student = 3,
-            Teacher = 2,
+            User = 2,
             Administrator = 1
         }
     }

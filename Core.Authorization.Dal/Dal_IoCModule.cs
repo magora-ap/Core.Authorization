@@ -1,12 +1,9 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Features.AttributeFilters;
 using Core.Authorization.Common.Concrete.Helpers;
 using Core.Authorization.Dal.Abstract;
 using Core.Authorization.Dal.Repository;
 using Core.Dal.Common.Connection;
-using Microsoft.Extensions.Options;
-using Npgsql;
 
 namespace Core.Authorization.Dal
 {

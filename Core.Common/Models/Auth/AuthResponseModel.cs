@@ -1,9 +1,5 @@
 ﻿namespace Core.Authorization.Common.Models.Auth
 {
-    /// <summary>
-    /// Model for authorization user
-    /// </summary>
-    /// Initial author Sergey Sushenko
     public class AuthResponseModel
     {
         public UserInfoModel UserInfo { get; set; }

@@ -5,7 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.5.0" />
+    <PackageReference Include="Autofac" Version="4.6.0" />
+    <PackageReference Include="CacheManager.Serialization.Json" Version="1.0.1" />
+    <PackageReference Include="CacheManager.StackExchange.Redis" Version="1.0.1" />
+    <PackageReference Include="jose-jwt" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="NLog" Version="5.0.0-beta07" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Authorization.Dal\Core.Authorization.Dal.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Authorization.Common.csproj" />
   </ItemGroup>
 
 </Project>

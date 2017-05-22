@@ -22,6 +22,8 @@ namespace Core.Authorization.Common.Models.Auth
         public long ExpirationTime { get; set; }
 
     }
+    
+    [Serializable]
     public class UserAuthModel
     {
         public Guid UserId { get; set; }
