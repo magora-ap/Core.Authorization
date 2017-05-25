@@ -1,4 +1,6 @@
-﻿namespace Core.Authorization.Common.Models.Response.Http
+﻿using System;
+
+namespace Core.Authorization.Common.Models.Response.Http
 {
     public sealed class ResultInfo<T> : ResultInfo
     {
@@ -8,7 +10,7 @@
 
     public sealed class ErrorResultInfo : ResultInfo
     {
-        public ErrorInfo[] Errors { get; set; }
+        public ErrorInfo[] Errors { get; set; }    
     }
 
     public class ErrorInfo

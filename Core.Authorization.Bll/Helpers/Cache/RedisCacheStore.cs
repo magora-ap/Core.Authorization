@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Authorization.Common.Models.Helpers;
-using NuGet.Protocol.Core.v3;
 using StackExchange.Redis;
 
 namespace Core.Authorization.Bll.Helpers.Cache

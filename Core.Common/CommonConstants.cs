@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Authorization.Common
+﻿namespace Core.Authorization.Common
 {
     public static class CommonConstants
     {

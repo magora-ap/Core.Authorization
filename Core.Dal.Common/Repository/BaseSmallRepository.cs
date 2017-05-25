@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using Core.Dal.Common.Abstract;
 using Core.Dal.Common.Models;
-using System.Data.Common;
 using Core.Dal.Common.Connection;
 using Core.Dal.Common.DataTable;
 using Npgsql;

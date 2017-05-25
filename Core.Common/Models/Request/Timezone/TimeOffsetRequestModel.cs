@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Authorization.Common.Models.Request.Timezone
+﻿namespace Core.Authorization.Common.Models.Request.Timezone
 {
     public class TimeOffsetRequestModel
     {

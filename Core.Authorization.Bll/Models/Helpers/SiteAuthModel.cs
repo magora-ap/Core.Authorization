@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Authorization.Bll.Models.Helpers
+﻿namespace Core.Authorization.Bll.Models.Helpers
 {
     public class SiteAuthModel
     {

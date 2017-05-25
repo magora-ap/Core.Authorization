@@ -2,9 +2,11 @@
 {
     public class AuthResponseModel
     {
-        public UserInfoModel UserInfo { get; set; }
         public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
         public long AccessTokenExpire { get; set; }
+        public string RefreshToken { get; set; }
+
+        public UserInfoModel AuthInfo { get; set; }
     }
 }
+

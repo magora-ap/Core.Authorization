@@ -1,11 +1,11 @@
-﻿using Core.Authorization.Common.Models.Request.Timezone;
+﻿using Core.Authorization.Common.Models.Request.Meta;
 
 namespace Core.Authorization.Common.Models.Request.Auth
 {
     public class LoginRequestModel
     {
-        public string Email { get; set; }
+        public string Login { get; set; }
         public string Password { get; set; }
-        public TimeOffsetRequestModel TimeOffset { get; set; }
+        public MetaInfo Meta { get; set; }
     }
 }

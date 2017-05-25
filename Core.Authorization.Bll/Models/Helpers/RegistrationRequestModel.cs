@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Core.Authorization.Common;
 
 namespace Core.Authorization.Bll.Models.Helpers

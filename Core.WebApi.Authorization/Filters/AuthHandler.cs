@@ -5,11 +5,8 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using Core.Authorization.Bll.Abstract;
 using Core.Authorization.Bll.Models.Helpers;
 using Core.Authorization.Common;
@@ -22,17 +19,21 @@ namespace Core.Authorization.WebApi.Filters
 {
     public class AuthHandler : AuthorizationHandler<AuthRequirement>
     {
-        private IHttpContextAccessor _contextAccessor;
-        private HttpContext _context => _contextAccessor.HttpContext;
-        private ITokenHelper _tokenHelper { get; }
-        private IEnumerable<Enums.Group> RolesEnum { get; set; }
-        public ICacheStoreHelper<UserAuthModel> _cacheStoreHelper;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private HttpContext Context => _contextAccessor.HttpContext;
 
-        public AuthHandler(IHttpContextAccessor contextAccessor, ITokenHelper tokenHelper, ICacheStoreHelper<UserAuthModel> cacheStoreHelper)
+        private ITokenHelper TokenHelper { get; }
+        private ICacheStoreHelper<UserAuthModel> CacheStoreHelper { get; }
+
+        private IEnumerable<Enums.Group> RolesEnum { get; set; }
+
+        public AuthHandler(IHttpContextAccessor contextAccessor,
+            ITokenHelper tokenHelper,
+            ICacheStoreHelper<UserAuthModel> cacheStoreHelper)
         {
             _contextAccessor = contextAccessor;
-            _tokenHelper = tokenHelper;
-            _cacheStoreHelper = cacheStoreHelper;
+            TokenHelper = tokenHelper;
+            CacheStoreHelper = cacheStoreHelper;
         }
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthRequirement requirement)
@@ -48,26 +49,22 @@ namespace Core.Authorization.WebApi.Filters
                     return Task.CompletedTask;
                 }
 
-                //var tokenHelper = new TokenHelper();
                 var token = tokens.First();
                 int index = token.IndexOf("Bearer ", StringComparison.Ordinal);
                 string cleanToken = (index < 0)
                     ? token
                     : token.Remove(index, "Bearer ".Length);
-                var res = _tokenHelper.CheckAccessToken(cleanToken);
+                var res = TokenHelper.CheckAccessToken(cleanToken);
                 if (!res)
                 {
                     context.Fail();
                     return Task.CompletedTask;
                 }
 
-                var tokenPayload = TokenHelper.GetPayloadByJwtToken<AccessTokenModel>(cleanToken).model;
+                var tokenPayload = Bll.Helpers.TokenHelper.GetPayloadByJwtToken<AccessTokenModel>(cleanToken).model;
                 if (tokenPayload != null)
                 {
-                    //using (var scope = IoC.BeginLifetimeScope())
-                    //{
-                    //var cacheStoreHelper = scope.Resolve<ICacheStoreHelper<UserAuthModel>>();
-                    var model = _cacheStoreHelper[CommonConstants.AccessTokenPrefix + cleanToken];
+                    var model = CacheStoreHelper[CommonConstants.AccessTokenPrefix + cleanToken];
                     if (model == null)
                     {
                         context.Fail();
@@ -87,18 +84,10 @@ namespace Core.Authorization.WebApi.Filters
                         UserModel = model
                     };
 
-                    _context.User = principal;
-
-                    //var principal1 = new UserPrincipal(new GenericIdentity("asdbvbe22"), new string[0]) {
-                    //    UserModel = new UserAuthModel() { UserId = Guid.NewGuid() }
-                    //}; _context.User = principal1;
-
-                    //Thread.CurrentPrincipal = principal;
-                    //HttpContext.Current.User = principal;
+                    Context.User = principal;
 
                     context.Succeed(requirement);
                     return Task.CompletedTask;
-                    //}
                 }
             }
 

@@ -5,8 +5,11 @@ namespace Core.Authorization.Common.Models.Auth
 {
     public class UserInfoModel
     {
-        public string Email { get; set; }
+        public string DisplayName { get; set; }
         public Guid UserId { get; set; }
+        public IEnumerable<string> Permissions { get; set; }
+
+        public string Email { get; set; }
         public Guid? AvatarId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

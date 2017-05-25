@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Authorization.Bll.Abstract
+﻿namespace Core.Authorization.Bll.Abstract
 {
     public interface ITokenHelper
     {

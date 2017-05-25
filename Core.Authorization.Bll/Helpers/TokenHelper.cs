@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Core.Authorization.Common;
+﻿using Core.Authorization.Common;
 using Core.Authorization.Common.Abstract;
 using Core.Authorization.Common.Concrete.Extensions;
 using Core.Authorization.Common.Models.Auth;
@@ -9,17 +8,16 @@ using Jose;
 using Newtonsoft.Json;
 using System;
 using Core.Authorization.Bll.Abstract;
-using Core.Authorization.Dal.Abstract;
 
 namespace Core.Authorization.Bll.Helpers
 {
     public class TokenHelper : ITokenHelper
     {
-        public readonly ICacheStoreHelper<UserAuthModel> _cacheStoreHelper;
+        public readonly ICacheStoreHelper<UserAuthModel> CacheStoreHelper;
 
         public TokenHelper(ICacheStoreHelper<UserAuthModel> cacheStoreHelper)
         {
-            _cacheStoreHelper = cacheStoreHelper;
+            CacheStoreHelper = cacheStoreHelper;
         }
 
         public static string CreateGuidToken()
@@ -63,9 +61,8 @@ namespace Core.Authorization.Bll.Helpers
                 return false;
             }
 
-            //var cacheHelper = IoC.Instance.Resolve<ICacheStoreHelper<UserAuthModel>>();
-            if (!_cacheStoreHelper.ContainsKey(CommonConstants.AccessTokenPrefix + accessToken) 
-                || _cacheStoreHelper[CommonConstants.AccessTokenPrefix + accessToken].UserId != payload?.model?.UserId)
+            if (!CacheStoreHelper.ContainsKey(CommonConstants.AccessTokenPrefix + accessToken) 
+                || CacheStoreHelper[CommonConstants.AccessTokenPrefix + accessToken].UserId != payload?.model?.UserId)
             {
                 return false;
             }

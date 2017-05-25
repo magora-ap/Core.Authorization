@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Authorization.Bll.Models.Helpers;
+﻿using Core.Authorization.Bll.Models.Helpers;
 using Core.Authorization.Common.Models.Auth;
 using Core.Authorization.Common.Models.Request.Auth;
 

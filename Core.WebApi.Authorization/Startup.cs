@@ -2,11 +2,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Core.Authorization.Bll;
-using Core.Authorization.Bll.Helpers.Cache;
-using Core.Authorization.Common.Abstract;
 using Core.Authorization.Common.Concrete.Helpers;
 using Core.Authorization.Dal;
-using Core.Authorization.WebApi.Run;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +47,11 @@ namespace Core.Authorization.WebApi
                 options.AddPolicy("Auth", policy => policy.Requirements.Add(new AuthRequirement()));
             });
 
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ExceptionFilter());
+            });
+
             services.AddSingleton<IAuthorizationHandler, AuthHandler>();
 
             // Setup options with DI
@@ -58,11 +60,7 @@ namespace Core.Authorization.WebApi
             var builder = new ContainerBuilder();
             // Add any Autofac modules or registrations.
             builder.RegisterModule(new Dal_IoCModule(config.Get<ConfigurationSettings>()));
-
             builder.RegisterModule(new Bll_IoCModule(config.Get<ConfigurationSettings>()));
-            //builder.RegisterGeneric(typeof(RedisCacheStore<>)).As(typeof(ICacheStoreHelper<>));
-            builder.RegisterModule(new AutofacModule());
-
             // Populate the services.
             builder.Populate(services);
             // Build the container.

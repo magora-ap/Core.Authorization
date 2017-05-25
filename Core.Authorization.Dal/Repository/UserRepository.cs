@@ -71,8 +71,8 @@ namespace Core.Authorization.Dal.Repository
 
         protected override Guid MapResult(Dictionary<string, object> row)
         {
-            if (row == null) return Guid.Empty;
-            return Guid.Parse(row.Values.ToString());
+            if (row == null || !row.Any()) return Guid.Empty;
+            return Guid.Parse(row.Values.First().ToString());
         }
 
         protected override UserModel MapToModel(Dictionary<string, object> row)

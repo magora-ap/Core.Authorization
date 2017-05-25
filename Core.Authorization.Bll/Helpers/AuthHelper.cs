@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Autofac;
 using Core.Authorization.Bll.Abstract;
@@ -10,7 +9,6 @@ using Core.Authorization.Common;
 using Core.Authorization.Common.Abstract;
 using Core.Authorization.Common.Concrete.Extensions;
 using Core.Authorization.Common.CustomException;
-using Core.Authorization.Common.Models;
 using Core.Authorization.Common.Models.Auth;
 using Core.Authorization.Common.Models.Auth.Token;
 using Core.Authorization.Common.Models.Group;
@@ -18,7 +16,6 @@ using Core.Authorization.Common.Models.Helpers;
 using Core.Authorization.Common.Models.Request.Auth;
 using Core.Authorization.Dal.Abstract;
 using Core.Authorization.Dal.Models;
-using NLog;
 
 namespace Core.Authorization.Bll.Helpers
 {
@@ -26,7 +23,8 @@ namespace Core.Authorization.Bll.Helpers
     {
         public AuthHelper(ILifetimeScope scope,
             IUserRepository userRepository,
-            IHashCryptographyHelper hashCryptographyHelper)
+            IHashCryptographyHelper hashCryptographyHelper,
+            ICacheStoreHelper<UserAuthModel> cacheStoreHelper)
             //IBaseItemRepository baseItemRepository,
             //IGroupToUserRepository groupToUserRepository,
             //IGroupRepository groupRepository)
@@ -34,6 +32,8 @@ namespace Core.Authorization.Bll.Helpers
             Scope = scope;
             UserRepository = userRepository;
             HashCryptographyHelper = hashCryptographyHelper;
+            CacheStoreHelper = cacheStoreHelper;
+            //TokenHelper = tokenHelper;
             //BaseItemRepository = baseItemRepository;
             //GroupToUserRepository = groupToUserRepository;
             //GroupRepository = groupRepository;         
@@ -43,10 +43,12 @@ namespace Core.Authorization.Bll.Helpers
 
         private IUserRepository UserRepository { get; }
         private IHashCryptographyHelper HashCryptographyHelper { get; }
+        private ICacheStoreHelper<UserAuthModel> CacheStoreHelper { get; }
         //private IBaseItemRepository BaseItemRepository { get; }
         //private IGroupToUserRepository GroupToUserRepository { get; }
         //private IGroupRepository GroupRepository { get; }
-        
+        //private ITokenHelper TokenHelper { get; }
+
         RegistrationResultModel IAuthHelper.RegistrationUser(RegistrationRequestModel<SiteAuthModel> model)
         {
             if (!CheckSecurityPassword(model?.Data?.Password)) throw new PasswordNotSecurity();
@@ -79,11 +81,10 @@ namespace Core.Authorization.Bll.Helpers
         public AuthResponseModel RefreshToken(RefreshTokenRequestModel model)
         {
             var token = TokenHelper.GetPayloadByJwtToken<RefreshTokenModel>(model.RefreshToken);
-            var cachaUserStoreHelper = IoC.Instance.Resolve<ICacheStoreHelper<UserAuthModel>>();
-            var user = cachaUserStoreHelper[CommonConstants.RefreshTokenPrefix + model.RefreshToken];
+            var user = CacheStoreHelper[CommonConstants.RefreshTokenPrefix + model.RefreshToken];
             if (user == null) throw new CredentialWrong();
-            cachaUserStoreHelper.Remove(token.model.RefreshToken);
-            cachaUserStoreHelper.Remove(token.model.AccessToken);
+            CacheStoreHelper.Remove(token.model.RefreshToken);
+            CacheStoreHelper.Remove(token.model.AccessToken);
             var session = CreateSession(user.UserId, user.Groups, model.TimeOffset?.Offset.AsTimeSpan());
             var userModel = UserRepository.GetById(user.UserId);
             if (userModel == null) throw new CredentialWrong();
@@ -94,10 +95,12 @@ namespace Core.Authorization.Bll.Helpers
                 AccessToken = session.AccessToken,
                 AccessTokenExpire = session.ExpirationTime,
                 RefreshToken = session.RefreshToken,
-                UserInfo = new UserInfoModel
+                AuthInfo = new UserInfoModel
                 {
-                    Email = userModel.Email,
+                    DisplayName = $"{userModel.LastName} {userModel.FirstName}",
                     UserId = userModel.Id,
+                    Permissions = new List<string>(), // ToDo change
+                    Email = userModel.Email,
                     AvatarId = userModel.PhotoId,
                     FirstName = userModel.FirstName,
                     LastName = userModel.LastName,
@@ -123,10 +126,13 @@ namespace Core.Authorization.Bll.Helpers
                 AccessToken = session.AccessToken,
                 AccessTokenExpire = session.ExpirationTime,
                 RefreshToken = session.RefreshToken,
-                UserInfo = new UserInfoModel
+                AuthInfo = new UserInfoModel
                 {
-                    Email = user.Email,
+                    DisplayName = $"{user.FirstName} {user.LastName}",
                     UserId = user.Id,
+                    Permissions = new List<string>(), // ToDo change
+
+                    Email = user.Email,
                     AvatarId = user.PhotoId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -198,7 +204,6 @@ namespace Core.Authorization.Bll.Helpers
 
         private UserSessionModel CreateSession(Guid userId, IEnumerable<Enums.Group> groups, TimeSpan? offset)
         {
-            var cacheStoreHelper = IoC.Instance.Resolve<ICacheStoreHelper<UserAuthModel>>();
             var expirationPeriod = ConfigurationHelper.AccessTokenExpiratedPeriod;
             var expirationRefreshPeriod = ConfigurationHelper.RefreshTokenExpiratedPeriod;
             var userCacheModel = new UserAuthModel
@@ -227,9 +232,9 @@ namespace Core.Authorization.Bll.Helpers
                 RefreshToken = TokenHelper.CreateJwtToken(refreshToken, ConfigurationHelper.JwtPublicKey),
                 ExpirationTime = accessToken.ExpirationTime
             };
-            cacheStoreHelper.Add(CommonConstants.AccessTokenPrefix + model.AccessToken, userCacheModel,
+            CacheStoreHelper.Add(CommonConstants.AccessTokenPrefix + model.AccessToken, userCacheModel,
                 expirationPeriod);
-            cacheStoreHelper.Add(CommonConstants.RefreshTokenPrefix + model.RefreshToken, userCacheModel,
+            CacheStoreHelper.Add(CommonConstants.RefreshTokenPrefix + model.RefreshToken, userCacheModel,
                 expirationRefreshPeriod);
             return model;
         }
