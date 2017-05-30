@@ -10,12 +10,8 @@ namespace Core.Authorization.WebApi.Filters
 {
     public class ExceptionFilter : ExceptionFilterAttribute
     {
-        //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public override void OnException(ExceptionContext context)
         {
-            //logger.Error(actionExecutedContext.Exception);
-
             if (context.Exception is CredentialWrong)
             {
                 var response = new ErrorResultInfo
@@ -34,24 +30,7 @@ namespace Core.Authorization.WebApi.Filters
                 context.HttpContext.Response.StatusCode = (int)ResponseResult.BadParameters.Code.HttpCode;
                 return;
             }
-            //if (actionExecutedContext.Exception is UserNotExist)
-            //{
-            //    var response = actionExecutedContext.Request.CreateResponse(ResponseResult.NotFound.Code.HttpCode,
-            //        new ErrorResultInfo
-            //        {
-            //            Code = ResponseResult.NotFound.Code.CodeString,
-            //            Errors = new[]
-            //            {
-            //                new ErrorInfo
-            //                {
-            //                    Code = ResponseResult.NotFound.Code.CodeString,
-            //                    Message = "User not exist"
-            //                }
-            //            }
-            //        });
-            //    actionExecutedContext.Response = response;
-            //    return;
-            //}
+
             if (context.Exception is UserAlreadyExist)
             {
                 var response = new ErrorResultInfo

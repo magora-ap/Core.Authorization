@@ -119,7 +119,6 @@ namespace Core.Authorization.WebApi.Filters
                             filterContext.HttpContext.Response.ContentType = "application / json";
                             await Response.Body.WriteAsync(message, 0, message.Length);
                         });
-                        //context.Fail();
                         return Task.CompletedTask;
                     }
 
@@ -136,7 +135,32 @@ namespace Core.Authorization.WebApi.Filters
                         {
                             if (!model.Groups.Any(t => RolesEnum.Any(f => f == t)))
                             {
-                                context.Fail();
+                                var Response = filterContext.HttpContext.Response;
+                                var errmodel = new ErrorResultInfo
+                                {
+                                    Code = ResponseResult.NotAccess.Code.CodeString,
+                                    Errors = new[]
+                                    {
+                                        new ErrorInfo
+                                        {
+                                            Code = ResponseResult.NotAccess.Code.CodeString,
+                                            Message = "Wrong group",
+                                            Field = "groups"
+                                        }
+                                    }
+                                };
+
+                                var message = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errmodel, new JsonSerializerSettings
+                                {
+                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                }));
+
+                                Response.OnStarting(async () =>
+                                {
+                                    filterContext.HttpContext.Response.StatusCode = (int)ResponseResult.NotAuthorized.Code.HttpCode;
+                                    filterContext.HttpContext.Response.ContentType = "application / json";
+                                    await Response.Body.WriteAsync(message, 0, message.Length);
+                                });
                                 return Task.CompletedTask;
                             }
                         }
