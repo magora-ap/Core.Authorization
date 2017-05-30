@@ -12,12 +12,6 @@ namespace Core.Authorization.WebApi.Controllers
     [ExceptionFilter]
     public class ValuesController : Controller
     {
-        //private IAuthorizationService _authorizationService;
-        //public ValuesController(IUserRepository repository, IAuthorizationService authorizationService)
-        //{
-        //    //var t = repository;
-        //    _authorizationService = authorizationService;
-        //}
 
         // GET api/values
         [HttpGet]
@@ -27,31 +21,6 @@ namespace Core.Authorization.WebApi.Controllers
             var userId = (HttpContext.User as UserPrincipal).UserModel.UserId;
 
             return new string[] { userId.ToString() };
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

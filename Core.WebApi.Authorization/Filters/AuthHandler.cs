@@ -14,6 +14,12 @@ using Core.Authorization.Common.Abstract;
 using Core.Authorization.Common.Models.Auth;
 using Core.Authorization.Common.Models.Auth.Token;
 using Microsoft.AspNetCore.Http;
+using System.Text;
+using System.IO;
+using Core.Authorization.Common.CustomException;
+using Newtonsoft.Json;
+using Core.Authorization.Common.Models.Response.Http;
+using Newtonsoft.Json.Serialization;
 
 namespace Core.Authorization.WebApi.Filters
 {
@@ -46,53 +52,113 @@ namespace Core.Authorization.WebApi.Filters
                 if (filterContext != null && !filterContext.HttpContext.Request.Headers.TryGetValue("Authorization", out tokens))
                 {
                     context.Fail();
-                    return Task.CompletedTask;
-                }
-
-                var token = tokens.First();
-                int index = token.IndexOf("Bearer ", StringComparison.Ordinal);
-                string cleanToken = (index < 0)
-                    ? token
-                    : token.Remove(index, "Bearer ".Length);
-                var res = TokenHelper.CheckAccessToken(cleanToken);
-                if (!res)
-                {
-                    context.Fail();
-                    return Task.CompletedTask;
-                }
-
-                var tokenPayload = Bll.Helpers.TokenHelper.GetPayloadByJwtToken<AccessTokenModel>(cleanToken).model;
-                if (tokenPayload != null)
-                {
-                    var model = CacheStoreHelper[CommonConstants.AccessTokenPrefix + cleanToken];
-                    if (model == null)
+                    var Response = filterContext.HttpContext.Response;
+                    var model = new ErrorResultInfo
                     {
-                        context.Fail();
+                        Code = ResponseResult.NotAuthorized.Code.CodeString
+                        ,
+                        Errors = new[]
+                        {
+                            new ErrorInfo
+                            {
+                                Code = ResponseResult.NotAuthorized.Code.CodeString,
+                                Message = "Not authorized request",
+                                Field = "Authorization"
+                            }
+                        }
+                    };
+
+                    var message = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(model, new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+
+                    Response.OnStarting(async () =>
+                    {
+                        filterContext.HttpContext.Response.StatusCode = (int)ResponseResult.NotAuthorized.Code.HttpCode;
+                        filterContext.HttpContext.Response.ContentType = "application / json";
+                        await Response.Body.WriteAsync(message, 0, message.Length);
+                    });
+
+                    return Task.CompletedTask;
+                }
+                else
+                {
+                    var token = tokens.First();
+                    int index = token.IndexOf("Bearer ", StringComparison.Ordinal);
+                    string cleanToken = (index < 0)
+                        ? token
+                        : token.Remove(index, "Bearer ".Length);
+                    var res = TokenHelper.CheckAccessToken(cleanToken);
+                    if (!res)
+                    {
+                        var Response = filterContext.HttpContext.Response;
+                        var model = new ErrorResultInfo
+                        {
+                            Code = ResponseResult.NotAuthorized.Code.CodeString
+                            ,
+                            Errors = new[]
+                            {
+                            new ErrorInfo
+                            {
+                                Code = ResponseResult.NotAuthorized.Code.CodeString,
+                                Message = "Wrong access token",
+                                Field = "accessToken"
+                            }
+                        }
+                        };
+
+                        var message = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(model, new JsonSerializerSettings
+                        {
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        }));
+
+                        Response.OnStarting(async () =>
+                        {
+                            filterContext.HttpContext.Response.StatusCode = (int)ResponseResult.NotAuthorized.Code.HttpCode;
+                            filterContext.HttpContext.Response.ContentType = "application / json";
+                            await Response.Body.WriteAsync(message, 0, message.Length);
+                        });
+                        //context.Fail();
                         return Task.CompletedTask;
                     }
-                    if (RolesEnum != null && RolesEnum.Any())
+
+                    var tokenPayload = Bll.Helpers.TokenHelper.GetPayloadByJwtToken<AccessTokenModel>(cleanToken).model;
+                    if (tokenPayload != null)
                     {
-                        if (!model.Groups.Any(t => RolesEnum.Any(f => f == t)))
+                        var model = CacheStoreHelper[CommonConstants.AccessTokenPrefix + cleanToken];
+                        if (model == null)
                         {
                             context.Fail();
                             return Task.CompletedTask;
                         }
+                        if (RolesEnum != null && RolesEnum.Any())
+                        {
+                            if (!model.Groups.Any(t => RolesEnum.Any(f => f == t)))
+                            {
+                                context.Fail();
+                                return Task.CompletedTask;
+                            }
+                        }
+
+                        var principal = new UserPrincipal(new GenericIdentity(tokenPayload.UserId.ToString()), new string[0])
+                        {
+                            UserModel = model
+                        };
+
+                        Context.User = principal;
+
+                        context.Succeed(requirement);
+                        return Task.CompletedTask;
                     }
-
-                    var principal = new UserPrincipal(new GenericIdentity(tokenPayload.UserId.ToString()), new string[0])
-                    {
-                        UserModel = model
-                    };
-
-                    Context.User = principal;
-
-                    context.Succeed(requirement);
-                    return Task.CompletedTask;
                 }
+
+                
             }
 
             context.Fail();
             return Task.CompletedTask;
+
         }
     }
 }

@@ -180,6 +180,16 @@ namespace Core.Authorization.Common.Models.Response.Http
             Field = "accesstoken"
         };
 
+        public static ApiDescription NotAuthorized = new ApiDescription
+        {
+            Code = new ApiCode
+            {
+                HttpCode = HttpStatusCode.Unauthorized,
+                CodeString = "security_error"
+            },
+            Description = "Not authorized"
+        };
+
         public static ApiDescription NotAccess = new ApiDescription
         {
             Code = new ApiCode

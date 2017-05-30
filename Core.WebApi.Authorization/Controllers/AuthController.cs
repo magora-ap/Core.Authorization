@@ -21,7 +21,6 @@ namespace Core.Authorization.WebApi.Controllers
 
         [HttpPost]
         [Route("api/registration")]
-        //[Validator(ValidationKeys.AuthSiteRequest)]
         public ResultInfo Registration([FromBody] SignUpRequestModel model)
         {
             var data = _authHelper.RegistrationUser(new RegistrationRequestModel<SiteAuthModel>

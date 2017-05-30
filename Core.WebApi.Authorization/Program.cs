@@ -16,6 +16,8 @@ namespace Core.Authorization.WebApi
                 .Build();
 
             host.Run();
+
+
         }
     }
 }

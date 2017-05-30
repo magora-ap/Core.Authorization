@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Core.Authorization.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Serialization;
 
 namespace Core.Authorization.WebApi
 {
@@ -50,7 +51,12 @@ namespace Core.Authorization.WebApi
             services.AddMvc(options =>
             {
                 options.Filters.Add(new ExceptionFilter());
-            });
+            }).AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            }); 
+
+
 
             services.AddSingleton<IAuthorizationHandler, AuthHandler>();
 
@@ -80,6 +86,7 @@ namespace Core.Authorization.WebApi
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
         }
+
 
     }
 }
