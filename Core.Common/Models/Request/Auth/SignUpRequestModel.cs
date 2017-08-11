@@ -6,6 +6,5 @@ namespace Core.Authorization.Common.Models.Request.Auth
     {
         public string Login { get; set; }
         public string Password { get; set; }
-        public e_GroupAuthRequest Group { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace Core.Authorization.WebApi.Controllers
                     Email = model.Login,
                     Password = model.Password
                 },
-                Groups = model.Group == e_GroupAuthRequest.Admin ? new[] { Enums.Group.Administrator } : new[] { Enums.Group.User }
+                Groups =  new[] { Enums.Group.User }
             });
             return new ResultInfo<Guid>
             {
