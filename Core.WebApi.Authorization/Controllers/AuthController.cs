@@ -36,6 +36,7 @@ namespace Core.Authorization.WebApi.Controllers
             });
             return new ResultInfo<Guid>
             {
+                Data = data.User.Id,
                 Code = ResponseResult.Success.Code.CodeString
             };
         }

@@ -35,12 +35,10 @@ namespace Core.Authorization.Dal.Repository
             yield return new ColumnItem("first_name");
             yield return new ColumnItem("gender_id");
             yield return new ColumnItem("is_active");
-            yield return new ColumnItem("is_confirm");
             yield return new ColumnItem("last_name");
             yield return new ColumnItem("password_hash");
             yield return new ColumnItem("photo_id");
             yield return new ColumnItem("salt");
-            yield return new ColumnItem("time_zone_id");
             yield return new ColumnItem("location_from");
         }
 
@@ -64,7 +62,6 @@ namespace Core.Authorization.Dal.Repository
             yield return new ValueItem(model.PasswordHash);
             yield return new ValueItem(model.PhotoId);
             yield return new ValueItem(model.Salt);
-            yield return new ValueItem(model.TimeZoneId);
             yield return new ValueItem(model.LocationFrom);
         }
 
@@ -106,10 +103,6 @@ namespace Core.Authorization.Dal.Repository
                         ? (Guid?)null
                         : Guid.Parse(row["photo_id"].ToString()),
                 Salt = row["salt"].ToString(),
-                TimeZoneId =
-                    string.IsNullOrEmpty(row["time_zone_id"].ToString())
-                        ? (int?)null
-                        : Convert.ToInt32(row["time_zone_id"].ToString()),
                 SocialData = JsonConvert.DeserializeObject<AuthJsonModel>(row["social_data"].ToString())
             };
         }
