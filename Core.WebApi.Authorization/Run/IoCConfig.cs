@@ -12,7 +12,8 @@ namespace Core.Authorization.WebApi.Run
         {
             IoC.Initialize(
                 new Bll_IoCModule(settings),
-                new Dal_IoCModule(settings));
+                new Dal_IoCModule(settings),
+                new ValidatorIoCModule(settings));
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Core.Authorization.Common.Models.Response.Http
     public class ApiCode
     {
         public string CodeString { get; set; }
+        public string GlobalCode { get; set; }
+        public string Message { get; set; }
         public HttpStatusCode HttpCode { get; set; }
     }
 }

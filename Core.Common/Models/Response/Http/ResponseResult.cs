@@ -93,45 +93,6 @@ namespace Core.Authorization.Common.Models.Response.Http
             Description = "Passsword not security"
         };
 
-        public static ApiDescription LessonPackageEnded = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.NotAcceptable,
-                CodeString = "package_ended"
-            },
-            Description = "Package lesson ended"
-        };
-
-        public static ApiDescription BookingThisTimeForbidden = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.Conflict,
-                CodeString = "booking_time_forbidden"
-            },
-            Description = "Booking this time forbidden"
-        };
-
-        public static ApiDescription FileNotSupported = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.BadRequest,
-                CodeString = "file_not_supported"
-            },
-            Description = "File not supported"
-        };
-
-        public static ApiDescription InternalError = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.InternalServerError,
-                CodeString = "internal_error"
-            }
-        };
-
         public static ApiDescription NotFound = new ApiDescription
         {
             Code = new ApiCode
@@ -139,34 +100,6 @@ namespace Core.Authorization.Common.Models.Response.Http
                 HttpCode = HttpStatusCode.NotFound,
                 CodeString = "not_found"
             }
-        };
-
-        public static ApiDescription MaxSizeLimit = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.BadRequest,
-                CodeString = "max_size_error"
-            }
-        };
-
-        public static ApiDescription FieldInvalid = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.BadRequest,
-                CodeString = "common.field_invalid"
-            }
-        };
-
-        public static ApiDescription FieldNotBlank = new ApiDescription
-        {
-            Code = new ApiCode
-            {
-                HttpCode = HttpStatusCode.BadRequest,
-                CodeString = "common.field_not_blank"
-            },
-            Description = "Field not blank"
         };
 
         public static ApiDescription ExpirateToken = new ApiDescription
@@ -180,14 +113,29 @@ namespace Core.Authorization.Common.Models.Response.Http
             Field = "accesstoken"
         };
 
+        public static ApiDescription InternalError = new ApiDescription
+        {
+            Code = new ApiCode
+            {
+                HttpCode = HttpStatusCode.InternalServerError,
+                CodeString = "internal_error",
+                GlobalCode = "internal_error",
+                Message = "Internal error"
+            },
+            Description = "Internal error"
+        };
+
         public static ApiDescription NotAuthorized = new ApiDescription
         {
             Code = new ApiCode
             {
                 HttpCode = HttpStatusCode.Unauthorized,
-                CodeString = "security_error"
+                CodeString =  "sec.access_token_invalid",
+                GlobalCode = "security_error",
+                Message = "Access token is expired"
             },
-            Description = "Not authorized"
+            Description = "Access token is expired",
+            Field = "accessToken"
         };
 
         public static ApiDescription NotAccess = new ApiDescription

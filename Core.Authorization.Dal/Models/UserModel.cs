@@ -18,7 +18,6 @@ namespace Core.Authorization.Dal.Models
         public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
         public string Salt { get; set; }
-        public bool IsConfirm { get; set; }
         public Guid? PhotoId { get; set; }
 
         public AuthJsonModel SocialData { get; set; }

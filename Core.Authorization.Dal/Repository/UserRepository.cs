@@ -60,7 +60,6 @@ namespace Core.Authorization.Dal.Repository
             yield return new ValueItem(model.FirstName);
             yield return new ValueItem(model.GenderId);
             yield return new ValueItem(model.IsActive);
-            yield return new ValueItem(model.IsConfirm);
             yield return new ValueItem(model.LastName);
             yield return new ValueItem(model.PasswordHash);
             yield return new ValueItem(model.PhotoId);
@@ -99,7 +98,6 @@ namespace Core.Authorization.Dal.Repository
                         ? (int?)null
                         : Convert.ToInt32(row["gender_id"].ToString()),
                 IsActive = (bool)row["is_active"],
-                IsConfirm = (bool)row["is_confirm"],
                 LastName = row["last_name"].ToString(),
                 LocationFrom = JsonConvert.DeserializeObject<GeographyPoint>(row["location_from"].ToString()),
                 PasswordHash = row["password_hash"].ToString(),

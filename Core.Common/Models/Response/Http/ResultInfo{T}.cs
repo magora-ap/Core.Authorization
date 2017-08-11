@@ -10,7 +10,9 @@ namespace Core.Authorization.Common.Models.Response.Http
 
     public sealed class ErrorResultInfo : ResultInfo
     {
-        public ErrorInfo[] Errors { get; set; }    
+        public ErrorInfo[] Errors { get; set; }
+        
+        public string Message { get; set; }
     }
 
     public class ErrorInfo

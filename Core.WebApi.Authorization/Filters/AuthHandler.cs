@@ -55,15 +55,14 @@ namespace Core.Authorization.WebApi.Filters
                     var Response = filterContext.HttpContext.Response;
                     var model = new ErrorResultInfo
                     {
-                        Code = ResponseResult.NotAuthorized.Code.CodeString
-                        ,
+                        Code = ResponseResult.NotAuthorized.Code.GlobalCode,
                         Errors = new[]
                         {
                             new ErrorInfo
                             {
                                 Code = ResponseResult.NotAuthorized.Code.CodeString,
-                                Message = "Not authorized request",
-                                Field = "Authorization"
+                                Message = ResponseResult.NotAuthorized.Description,
+                                Field = ResponseResult.NotAuthorized.Field
                             }
                         }
                     };
@@ -130,39 +129,6 @@ namespace Core.Authorization.WebApi.Filters
                         {
                             context.Fail();
                             return Task.CompletedTask;
-                        }
-                        if (RolesEnum != null && RolesEnum.Any())
-                        {
-                            if (!model.Groups.Any(t => RolesEnum.Any(f => f == t)))
-                            {
-                                var Response = filterContext.HttpContext.Response;
-                                var errmodel = new ErrorResultInfo
-                                {
-                                    Code = ResponseResult.NotAccess.Code.CodeString,
-                                    Errors = new[]
-                                    {
-                                        new ErrorInfo
-                                        {
-                                            Code = ResponseResult.NotAccess.Code.CodeString,
-                                            Message = "Wrong group",
-                                            Field = "groups"
-                                        }
-                                    }
-                                };
-
-                                var message = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errmodel, new JsonSerializerSettings
-                                {
-                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                                }));
-
-                                Response.OnStarting(async () =>
-                                {
-                                    filterContext.HttpContext.Response.StatusCode = (int)ResponseResult.NotAuthorized.Code.HttpCode;
-                                    filterContext.HttpContext.Response.ContentType = "application / json";
-                                    await Response.Body.WriteAsync(message, 0, message.Length);
-                                });
-                                return Task.CompletedTask;
-                            }
                         }
 
                         var principal = new UserPrincipal(new GenericIdentity(tokenPayload.UserId.ToString()), new string[0])

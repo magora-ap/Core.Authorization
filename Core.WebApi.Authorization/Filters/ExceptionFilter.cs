@@ -5,6 +5,8 @@ using Core.Authorization.Common.Models.Response.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
+using Core.Authorization.Common.Models;
+using Core.Authorization.Common.Api;
 
 namespace Core.Authorization.WebApi.Filters
 {
@@ -12,19 +14,41 @@ namespace Core.Authorization.WebApi.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            if (context.Exception is CredentialWrong)
+            if (context.Exception is RefreshTokenWrong)
             {
                 var response = new ErrorResultInfo
                 {
-                    Code = ResponseResult.BadParameters.Code.CodeString,
+                    Code = RequestResult.InvalidRefreshToken.Code.GlobalCode,
                     Errors = new[]
                     {
                         new ErrorInfo
                         {
-                            Code = ResponseResult.BadParameters.Code.CodeString,
-                            Message = "Wrong login or password"
+                            Code = RequestResult.InvalidRefreshToken.Code.CodeString,
+                            Message = RequestResult.InvalidRefreshToken.Code.Message,
+                            Field = "refreshToken"
                         }
-                    }
+                    },
+                    Message = RequestResult.InvalidRefreshToken.Code.Message
+                };
+                context.Result = new JsonResult(response);
+                context.HttpContext.Response.StatusCode = (int)ResponseResult.BadParameters.Code.HttpCode;
+                return;
+            }
+
+            if (context.Exception is CredentialWrong)
+            {
+                var response = new ErrorResultInfo
+                {
+                    Code = RequestResult.InvalidLoginOrPassword.Code.GlobalCode,
+                    Errors = new[]
+                    {
+                        new ErrorInfo
+                        {
+                            Code = RequestResult.InvalidLoginOrPassword.Code.CodeString,
+                            Message = RequestResult.InvalidLoginOrPassword.Code.Message
+                        }
+                    },
+                    Message = RequestResult.InvalidLoginOrPassword.Code.Message
                 };
                 context.Result = new JsonResult(response);
                 context.HttpContext.Response.StatusCode = (int)ResponseResult.BadParameters.Code.HttpCode;

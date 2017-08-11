@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 using Core.Authorization.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
+using Core.Authorization.WebApi.Run;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Authorization.WebApi
 {
@@ -54,9 +57,13 @@ namespace Core.Authorization.WebApi
             }).AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            }); 
+            });
 
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
 
             services.AddSingleton<IAuthorizationHandler, AuthHandler>();
 
@@ -67,13 +74,22 @@ namespace Core.Authorization.WebApi
             // Add any Autofac modules or registrations.
             builder.RegisterModule(new Dal_IoCModule(config.Get<ConfigurationSettings>()));
             builder.RegisterModule(new Bll_IoCModule(config.Get<ConfigurationSettings>()));
+            builder.RegisterModule(new ValidatorIoCModule(config.Get<ConfigurationSettings>()));
+
+     
+
             // Populate the services.
             builder.Populate(services);
             // Build the container.
             this.ApplicationContainer = builder.Build();
+
+           
+
             // Create and return the service provider.
             return new AutofacServiceProvider(this.ApplicationContainer);
         }
+
+       
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
@@ -82,6 +98,11 @@ namespace Core.Authorization.WebApi
             loggerFactory.AddDebug();
 
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());

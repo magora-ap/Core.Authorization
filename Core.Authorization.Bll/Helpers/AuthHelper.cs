@@ -51,7 +51,6 @@ namespace Core.Authorization.Bll.Helpers
 
         RegistrationResultModel IAuthHelper.RegistrationUser(RegistrationRequestModel<SiteAuthModel> model)
         {
-            if (!CheckSecurityPassword(model?.Data?.Password)) throw new PasswordNotSecurity();
             var salt = HashCryptographyHelper.GetSalt();
             var userModel = new UserModel
             {
@@ -61,8 +60,7 @@ namespace Core.Authorization.Bll.Helpers
                         HashCryptographyHelper.GetSha512Hash(model.Data.Password), salt
                     )
                     : null,
-                Salt = salt,
-                IsConfirm = false
+                Salt = salt
             };
             return Registration(userModel, true, model.Groups);
         }
@@ -82,10 +80,10 @@ namespace Core.Authorization.Bll.Helpers
         {
             var token = TokenHelper.GetPayloadByJwtToken<RefreshTokenModel>(model.RefreshToken);
             var user = CacheStoreHelper[CommonConstants.RefreshTokenPrefix + model.RefreshToken];
-            if (user == null) throw new CredentialWrong();
+            if (user == null) throw new RefreshTokenWrong();
             CacheStoreHelper.Remove(token.model.RefreshToken);
             CacheStoreHelper.Remove(token.model.AccessToken);
-            var session = CreateSession(user.UserId, user.Groups, model.TimeOffset?.Offset.AsTimeSpan());
+            var session = CreateSession(user.UserId, user.Groups);
             var userModel = UserRepository.GetById(user.UserId);
             if (userModel == null) throw new CredentialWrong();
             if (!userModel.IsActive) throw new AcccountDeactivatedException();
@@ -100,10 +98,10 @@ namespace Core.Authorization.Bll.Helpers
                     DisplayName = $"{userModel.LastName} {userModel.FirstName}",
                     UserId = userModel.Id,
                     Permissions = new List<string>(), // ToDo change
-                    Email = userModel.Email,
+                    /*Email = userModel.Email,
                     AvatarId = userModel.PhotoId,
                     FirstName = userModel.FirstName,
-                    LastName = userModel.LastName,
+                    LastName = userModel.LastName,*/
                     //TimestampOfBirth = userModel.BirthDate.UnixDateTime(),
                     //Groups = groups.Select(t => new GroupInfoModel
                     //{
@@ -120,7 +118,7 @@ namespace Core.Authorization.Bll.Helpers
                 throw new CredentialWrong();
             if (user?.IsActive == false) throw new AcccountDeactivatedException();
             var groups = new List<GroupModel>(); // GroupRepository.GetGroupsByUserId(user.Id).ToArray();
-            var session = CreateSession(user.Id, groups.Select(t => (Enums.Group) t.Id), offset);
+            var session = CreateSession(user.Id, groups.Select(t => (Enums.Group) t.Id));
             return new AuthResponseModel
             {
                 AccessToken = session.AccessToken,
@@ -130,18 +128,9 @@ namespace Core.Authorization.Bll.Helpers
                 {
                     DisplayName = $"{user.FirstName} {user.LastName}",
                     UserId = user.Id,
-                    Permissions = new List<string>(), // ToDo change
+                    Permissions = new List<string>() // ToDo change
 
-                    Email = user.Email,
-                    AvatarId = user.PhotoId,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    //TimestampOfBirth = user.BirthDate.UnixDateTime(),
-                    Groups = groups.Select(t => new GroupInfoModel
-                    {
-                        Id = t.Id,
-                        Name = t.Name
-                    })
+                    
                 }
             };
         }
@@ -158,8 +147,6 @@ namespace Core.Authorization.Bll.Helpers
                 //    CreateTimestamp = DateTime.UtcNow,
                 //    Id = Guid.NewGuid()
                 //});
-                if (isConfirmEmail == false)
-                    model.IsConfirm = true;
                 model.Id = Guid.NewGuid();
                 model.CreateTimestamp = DateTime.UtcNow;
                 model.IsActive = true;
@@ -202,15 +189,14 @@ namespace Core.Authorization.Bll.Helpers
             return Regex.IsMatch(password, pattern);
         }
 
-        private UserSessionModel CreateSession(Guid userId, IEnumerable<Enums.Group> groups, TimeSpan? offset)
+        private UserSessionModel CreateSession(Guid userId, IEnumerable<Enums.Group> groups)
         {
             var expirationPeriod = ConfigurationHelper.AccessTokenExpiratedPeriod;
             var expirationRefreshPeriod = ConfigurationHelper.RefreshTokenExpiratedPeriod;
             var userCacheModel = new UserAuthModel
             {
                 UserId = userId,
-                Groups = groups.ToArray(),
-                Offset = offset
+                Groups = groups.ToArray()
             };
             var accessToken = new AccessTokenModel
             {
@@ -252,7 +238,7 @@ namespace Core.Authorization.Bll.Helpers
             var hashPassword =
                 HashCryptographyHelper.GetSaltPassword(HashCryptographyHelper.GetSha512Hash(password),
                     user.Salt);
-            return hashPassword.Equals(user.PasswordHash) && user.IsConfirm;
+            return hashPassword.Equals(user.PasswordHash);
         }
 
     }
